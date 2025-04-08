@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.alfarv.mousewiggle</string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>connections</key>
+	<dict>
+		<key>27C6780C-6AF3-4DC7-B237-C12B4A14A9F6</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>BE5822A7-7298-4BEE-9E08-CA3F2E44CF67</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Alfred Arvidsson</string>
+	<key>description</key>
+	<string>Move the mouse cursor to prevent sleeping</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Mouse wiggle</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>query=$1
+
+echo -n $query#!/bin/zsh
+
+WIGGLE_SCRIPT="$HOME/.alfred_mouse_wiggle.sh"
+COMMAND="$1"
+
+# Auto-install cliclick if not found
+if ! command -v cliclick &gt;/dev/null 2&gt;&amp;1; then
+  # Use brew to install if available
+  if command -v brew &gt;/dev/null 2&gt;&amp;1; then
+    osascript -e 'display notification "Installing cliclick..." with title "Mouse Wiggle"'
+    brew install cliclick
+  else
+    osascript -e 'display notification "Homebrew not found. Please install cliclick manually." with title "Mouse Wiggle Error"'
+    exit 1
+  fi
+fi
+
+if [[ "$COMMAND" == "start" ]]; then
+    cat &gt; "$WIGGLE_SCRIPT" &lt;&lt;'EOF'
+#!/bin/zsh
+while true; do
+  cliclick m:+5,+0
+  sleep 0.5
+  cliclick m:+0,+5
+  sleep 0.5
+  cliclick m:-5,+0
+  sleep 0.5
+  cliclick m:+0,-5
+  sleep 0.5
+done
+EOF
+
+    chmod +x "$WIGGLE_SCRIPT"
+    nohup "$WIGGLE_SCRIPT" &gt; /dev/null 2&gt;&amp;1 &amp;
+elif [[ "$COMMAND" == "stop" ]]; then
+    pkill -f .alfred_mouse_wiggle.sh
+    rm -f "$WIGGLE_SCRIPT"
+fi</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>5</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>BE5822A7-7298-4BEE-9E08-CA3F2E44CF67</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>wiggle</string>
+				<key>subtext</key>
+				<string>Usage: wiggle [start | stop]</string>
+				<key>text</key>
+				<string>Start or stop mouse wiggling</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>27C6780C-6AF3-4DC7-B237-C12B4A14A9F6</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>Keep your Mac awake with a gentle nudge — no more sleep interruptions during long downloads, meetings, or remote sessions.
+
+This Alfred 5 workflow starts and stops a lightweight background process that moves your mouse cursor just enough to prevent your system from going idle.</string>
+	<key>uidata</key>
+	<dict>
+		<key>27C6780C-6AF3-4DC7-B237-C12B4A14A9F6</key>
+		<dict>
+			<key>xpos</key>
+			<real>170</real>
+			<key>ypos</key>
+			<real>190</real>
+		</dict>
+		<key>BE5822A7-7298-4BEE-9E08-CA3F2E44CF67</key>
+		<dict>
+			<key>xpos</key>
+			<real>380</real>
+			<key>ypos</key>
+			<real>190</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>variablesdontexport</key>
+	<array/>
+	<key>version</key>
+	<string>1.0.0</string>
+	<key>webaddress</key>
+	<string>https://github.com/alf-arv</string>
+</dict>
+</plist>
